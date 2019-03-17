@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="style.css">
+  <title>D3 Shot Direction Visualization</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+  <form name="inputDataText" id="inputDataText">
+    Title：<input type="text" id="title" name="title" value="Title"><br>
+    Player:<input type="text" id="player" name="player" value="Player"><br>
+  </form>
+
+  <form name="inputDataNum" id="inputDataNum">
+    Cross：<input type="text" id="cross" name="cross" value="10"><br>
+    Center:<input type="text" id="center" name="center" value="20"><br>
+    Straight:<input type="text" id="straight" name="straight" value="30"><br>
+  </form>
+
+  <p id="titleText"><b>Title</p>
+  <p id="playerText"><b>Player</p>
+  <svg id="tennisCourt"></svg>
+  <p><b>@DataTennis.Net</b></p>
+
+  <script src="ShotDirection.js"></script>
+</body>
+
+</html>

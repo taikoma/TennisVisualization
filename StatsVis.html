@@ -1,0 +1,144 @@
+<head>
+  <meta charset="utf-8">
+  <title>D3 Scatter Plot</title>
+
+<style>
+.axis svg{
+  fill:Aquamarine;
+  opacity:0.1;
+  stroke:#000;
+  stroke-width:1;
+  shape-rendering:crispEdges;
+
+}
+</style>
+<script src="/d3/d3.min.js">
+</script>
+</head>
+
+<!-- <svg id="chart1"></svg> -->
+
+
+<body>
+  <script>
+
+  // var dataset = [
+  //   [5, 20],
+  //   [80, 100],
+  //   [50, 50],
+  //   [100, 33],
+  //   [30, 95],
+  //   [10, 12],
+  //   [75, 44],
+  //   [25, 67],
+  //   [85, 21],
+  //   [20, 88]
+  // ];
+
+
+  var width = 400; // グラフの幅
+  var height = 300; // グラフの高さ
+  var margin = { "top": 30, "bottom": 60, "right": 30, "left": 60 };
+
+  d3.csv("RakutenRating.csv").then(function(data) {
+    var dataset = [];
+    var label = [];
+    for(var i=0; i<data.length; i++){
+        dataset.push([data[i].ServicePointsWon,data[i].ReturnPointsWon]);
+        label.push([data[i].ServicePointsWon,data[i].ReturnPointsWon,data[i].Player]);
+    }
+    console.log(dataset);
+
+    make(dataset,label);
+  });
+
+
+  // 2. SVG領域の設定
+  function make(dataset,label){
+    console.log(label);
+    var svg = d3.select("body").append("svg").attr("width", width).attr("height", height);
+
+    // 3. 軸スケールの設定
+    var xScale = d3.scaleLinear()
+      .domain([55, d3.max(dataset, function(d) { return d[0]; })])
+      .range([margin.left, width - margin.right]);
+
+    var yScale = d3.scaleLinear()
+      .domain([30, d3.max(dataset, function(d) { return d[1]; })])
+      .range([height - margin.bottom, margin.top]);
+
+    // 4. 軸の表示
+    var axisx = d3.axisBottom(xScale).ticks(5);
+    var axisy = d3.axisLeft(yScale).ticks(5);
+
+    svg.append("g")
+      .attr("transform", "translate(" + 0 + "," + (height - margin.bottom) + ")")
+      .call(axisx)
+      .append("text")
+      .attr("fill", "black")
+      .attr("x", (width - margin.left - margin.right) / 2 + margin.left)
+      .attr("y", 35)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "10pt")
+      .attr("font-weight", "bold")
+      .text("Serve Points Won %");
+
+    svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+      .call(axisy)
+      .append("text")
+      .attr("fill", "black")
+      .attr("x", -(height - margin.top - margin.bottom) / 2 - margin.top)
+      .attr("y", -35)
+      .attr("transform", "rotate(-90)")
+      .attr("text-anchor", "middle")
+      .attr("font-weight", "bold")
+      .attr("font-size", "10pt")
+      .text("Return Points Won %");
+
+    // 5. プロットの表示
+    svg.append("g")
+      .selectAll("circle")
+      .data(dataset)
+      .enter()
+      .append("circle")
+      .attr("cx", function(d) { return xScale(d[0]); })
+      .attr("cy", function(d) { return yScale(d[1]); })
+      .attr("fill", "steelblue")
+      .attr("r", 4);
+
+    svg.append("g").selectAll("text")
+    .data(label)
+    .enter()
+    .append("text")
+    .text(function(d){
+      return d[2];
+    })
+    .attr("transform", function(d) { return "translate(" + (xScale(d[0])+2) + "," + (yScale(d[1])-4) + ")"; })  // 位置を調整
+    .attr("font-family", "tahoma")  // フォントを指定
+    .attr("font-size", "9px")   // 文字サイズを指定
+    .attr("fill", "black")    // 文字の色を指定
+
+    var sZone = [[70,60], [65,30], [75,30], [75,60]];
+    svg.append("path")
+      .datum(sZone)
+      .style("fill", "FF0000")
+      .style("opacity",0.1)
+      .attr("d", d3.line()
+        .x(function(d) { return xScale(d[0]); })
+        .y(function(d) { return yScale(d[1]); }));
+
+    var rZone = [[55,30], [65,30], [70,60], [55,60]];
+    svg.append("path")
+      .datum(rZone)
+      .style("fill", "003200")
+      .style("opacity",0.1)
+      .attr("d", d3.line()
+        .x(function(d) { return xScale(d[0]); })
+        .y(function(d) { return yScale(d[1]); }));
+      }
+
+  </script>
+</body>
+
+</html>
